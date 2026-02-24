@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tracker Fitness</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        .card { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 8px; }
+        input, button { width: 100%; padding: 10px; margin-bottom: 10px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <h1>🍏 Mi Tracker</h1>
+
+    <div class="card">
+        <h3>Registrar Comida</h3>
+        <input type="text" id="comida" placeholder="Ej: Manzana">
+        <input type="number" id="calorias" placeholder="Calorías">
+        <button onclick="guardarComida()">Guardar Comida</button>
+    </div>
+
+    <div class="card">
+        <h3>Historial</h3>
+        <ul id="lista-comidas"></ul>
+    </div>
+
+    <script>
+        // 1. Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', mostrarComidas);
+
+        function guardarComida() {
+            // 2. Capturar valores
+            const comida = document.getElementById('comida').value;
+            const calorias = document.getElementById('calorias').value;
+
+            if(comida === '') return alert('Escribe algo');
+
+            // 3. Crear objeto
+            const registro = { comida, calorias, fecha: new Date().toLocaleDateString() };
+
+            // 4. Guardar en LocalStorage (Base de datos del navegador)
+            let comidas = JSON.parse(localStorage.getItem('misComidas')) || [];
+            comidas.push(registro);
+            localStorage.setItem('misComidas', JSON.stringify(comidas));
+
+            // 5. Limpiar y actualizar
+            document.getElementById('comida').value = '';
+            document.getElementById('calorias').value = '';
+            mostrarComidas();
+        }
+
+        function mostrarComidas() {
+            const lista = document.getElementById('lista-comidas');
+            lista.innerHTML = '';
+            let comidas = JSON.parse(localStorage.getItem('misComidas')) || [];
+
+            comidas.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.fecha} - ${item.comida} (${item.calorias} kcal)`;
+                lista.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
